@@ -288,4 +288,332 @@ const ActionTracker = () => {
             <div className="flex flex-wrap gap-2">
               <button
                 onClick={() => setFilters({...filters, status: 'All'})}
-                className={`px-4 py-2 rounded-md text
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  filters.status === 'All'
+                    ? 'bg-gray-600 text-white'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                All Statuses
+              </button>
+              {statuses.map(status => (
+                <button
+                  key={status}
+                  onClick={() => setFilters({...filters, status})}
+                  className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                    filters.status === status
+                      ? getStatusButtonColor(status)
+                      : filters.status === 'All'
+                        ? getStatusButtonColor(status).replace('600', '400')
+                        : 'bg-gray-200 text-gray-500'
+                  }`}
+                >
+                  {status}
+                </button>
+              ))}
+            </div>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-3">Assignee</label>
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={() => setFilters({...filters, person: 'All'})}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  filters.person === 'All'
+                    ? 'bg-gray-600 text-white'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                All People
+              </button>
+              {uniqueAssignees.map(person => (
+                <button
+                  key={person}
+                  onClick={() => setFilters({...filters, person})}
+                  className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                    filters.person === person
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  {person}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Form */}
+      {showForm && (
+        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            {editingAction ? 'Edit Action' : 'New Action'}
+          </h2>
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Action Title *</label>
+                <input
+                  type="text"
+                  required
+                  value={formData.title}
+                  onChange={(e) => setFormData({...formData, title: e.target.value})}
+                  className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Brief action description"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Assignee *</label>
+                <input
+                  type="text"
+                  required
+                  value={formData.assignee}
+                  onChange={(e) => setFormData({...formData, assignee: e.target.value})}
+                  className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Person responsible"
+                />
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Project Name</label>
+                <input
+                  type="text"
+                  value={formData.projectName}
+                  onChange={(e) => setFormData({...formData, projectName: e.target.value})}
+                  className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Construction project name"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                <textarea
+                  value={formData.description}
+                  onChange={(e) => setFormData({...formData, description: e.target.value})}
+                  rows={2}
+                  className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Detailed description"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Discipline</label>
+                <div className="flex flex-wrap gap-2">
+                  {disciplines.map(discipline => (
+                    <button
+                      key={discipline}
+                      type="button"
+                      onClick={() => setFormData({...formData, discipline})}
+                      className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                        formData.discipline === discipline
+                          ? getDisciplineButtonColor(discipline)
+                          : 'bg-gray-200 text-gray-500'
+                      }`}
+                    >
+                      {discipline}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Priority</label>
+                <div className="flex flex-wrap gap-2">
+                  {priorities.map(priority => (
+                    <button
+                      key={priority}
+                      type="button"
+                      onClick={() => setFormData({...formData, priority})}
+                      className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                        formData.priority === priority
+                          ? getPriorityButtonColor(priority)
+                          : 'bg-gray-200 text-gray-500'
+                      }`}
+                    >
+                      {priority}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                <div className="flex flex-wrap gap-2">
+                  {statuses.map(status => (
+                    <button
+                      key={status}
+                      type="button"
+                      onClick={() => setFormData({...formData, status})}
+                      className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                        formData.status === status
+                          ? getStatusButtonColor(status)
+                          : 'bg-gray-200 text-gray-500'
+                      }`}
+                    >
+                      {status}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Due Date</label>
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {dueDateOptions.map(option => (
+                    <button
+                      key={option.label}
+                      type="button"
+                      onClick={() => setFormData({...formData, dueDate: option.value})}
+                      className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                        formData.dueDate === option.value
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-gray-200 text-gray-500 hover:bg-gray-300'
+                      }`}
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => setShowCustomDate(!showCustomDate)}
+                    className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                      showCustomDate
+                        ? 'bg-purple-600 text-white'
+                        : 'bg-gray-200 text-gray-500 hover:bg-gray-300'
+                    }`}
+                  >
+                    Custom Date
+                  </button>
+                </div>
+                {showCustomDate && (
+                  <input
+                    type="date"
+                    value={formData.dueDate}
+                    onChange={(e) => setFormData({...formData, dueDate: e.target.value})}
+                    className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                )}
+              </div>
+            </div>
+
+            <div className="flex gap-3 pt-4">
+              <button
+                type="button"
+                onClick={handleSubmit}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md transition-colors"
+              >
+                {editingAction ? 'Update Action' : 'Create Action'}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  resetForm();
+                  setEditingAction(null);
+                }}
+                className="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-md transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Actions List */}
+      <div className="space-y-4">
+        {filteredActions.length === 0 ? (
+          <div className="bg-white rounded-lg shadow-sm p-8 text-center">
+            <p className="text-gray-500 text-lg">No actions found matching your filters.</p>
+            <p className="text-gray-400 mt-2">Create your first action to get started!</p>
+          </div>
+        ) : (
+          filteredActions.map(action => (
+            <div key={action.id} className="bg-white rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow">
+              <div className="flex justify-between items-start mb-3">
+                <div className="flex-1">
+                  <div className="flex items-start justify-between mb-2">
+                    <h3 className="text-lg font-semibold text-gray-900">{action.title}</h3>
+                    {action.projectName && (
+                      <span className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                        {action.projectName}
+                      </span>
+                    )}
+                  </div>
+                  
+                  {action.description && (
+                    <p className="text-gray-600 mb-3">{action.description}</p>
+                  )}
+                  
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${getDisciplineColor(action.discipline)}`}>
+                      {action.discipline}
+                    </span>
+                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(action.status)}`}>
+                      {action.status}
+                    </span>
+                    <span className={`px-3 py-1 rounded-full text-sm font-medium border ${getPriorityColor(action.priority)}`}>
+                      {action.priority}
+                    </span>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
+                    <div className="flex items-center gap-1">
+                      <User size={16} />
+                      <span>{action.assignee}</span>
+                    </div>
+                    {action.dueDate && (
+                      <div className="flex items-center gap-1">
+                        <Calendar size={16} />
+                        <span>Due: {new Date(action.dueDate).toLocaleDateString()}</span>
+                      </div>
+                    )}
+                    <div className="text-xs">
+                      Created: {new Date(action.createdAt).toLocaleDateString()}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 ml-4">
+                  {action.status !== 'Closed' && (
+                    <button
+                      onClick={() => handleStatusChange(action.id, 'Closed')}
+                      className="bg-green-100 hover:bg-green-200 text-green-800 p-2 rounded-md transition-colors"
+                      title="Mark as Closed"
+                    >
+                      <Check size={16} />
+                    </button>
+                  )}
+                  
+                  <button
+                    onClick={() => handleEdit(action)}
+                    className="bg-blue-100 hover:bg-blue-200 text-blue-800 p-2 rounded-md transition-colors"
+                    title="Edit Action"
+                  >
+                    <Edit2 size={16} />
+                  </button>
+                  
+                  <button
+                    onClick={() => deleteAction(action.id)}
+                    className="bg-red-100 hover:bg-red-200 text-red-800 p-2 rounded-md transition-colors"
+                    title="Delete Action"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default ActionTracker;
