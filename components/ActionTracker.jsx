@@ -108,6 +108,12 @@ const ActionTracker = () => {
     setFormData(action);
     setEditingAction(action);
     setShowForm(true);
+    // Show the custom date input when the existing due date does not match
+    // one of the predefined quick select options
+    const isCustom =
+      action.dueDate &&
+      !dueDateOptions.some((option) => option.value === action.dueDate);
+    setShowCustomDate(isCustom);
   };
 
   const handleStatusChange = async (actionId, newStatus) => {
